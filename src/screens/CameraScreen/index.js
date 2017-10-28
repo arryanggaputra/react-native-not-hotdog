@@ -5,11 +5,14 @@ import {
   BackHandler,
   DeviceEventEmitter,
   StatusBar,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from "react-native";
 import { NavigationActions } from "react-navigation";
 import * as Animatable from "react-native-animatable";
 import Camera from "react-native-camera";
+import ImageNotification from "./component/imageNotification";
+import CameraButton from "./component/cameraButton";
 import Style from "../../assets/style.js";
 
 const hotdogTrue = require("../../assets/hotdog_true.png");
@@ -97,6 +100,9 @@ class CameraScreen extends Component {
     return (
       <View style={[Style.container, { flexDirection: "row", flex: 1 }]}>
         <StatusBar hidden={true} />
+
+        <ImageNotification source={hotdogTrue} visible={false} />
+
         <Camera
           ref={cam => {
             this.camera = cam;
@@ -105,42 +111,24 @@ class CameraScreen extends Component {
           aspect={Camera.constants.Aspect.fill}
         />
 
-        <View />
-
         {this.state.showRetake && (
-          <Animatable.View
+          <CameraButton
+            onPress={() => {
+              this.takePicture();
+            }}
             animation={this.state.showRetakeAnimation}
-            duration={1000}
-            style={Style.floatingArea}
-          >
-            <TouchableOpacity
-              style={[Style.button, Style.buttonRed, { width: 180 }]}
-              onPress={() => {
-                this.takePicture();
-              }}
-            >
-              <Text style={[Style.buttonText, { color: "white" }]}>
-                Take it!
-              </Text>
-            </TouchableOpacity>
-          </Animatable.View>
+            style={Style.buttonRed}
+            text={"Take it!"}
+          />
         )}
 
         {this.state.showResult && (
-          <Animatable.View
+          <CameraButton
+            onPress={() => {}}
             animation={this.state.showResultAnimation}
-            duration={1000}
-            style={Style.floatingArea}
+            style={Style.buttonBlue}
+            text={"SHARE!"}
           >
-            <TouchableOpacity
-              style={[Style.button, Style.buttonBlue, { width: 180 }]}
-              onPress={() => {
-                // this.takePicture();
-              }}
-            >
-              <Text style={[Style.buttonText, { color: "white" }]}>SHARE</Text>
-            </TouchableOpacity>
-
             <Text
               style={{ fontWeight: "bold", color: "white", marginTop: 20 }}
               onPress={() => {
@@ -149,7 +137,7 @@ class CameraScreen extends Component {
             >
               No, Thanks
             </Text>
-          </Animatable.View>
+          </CameraButton>
         )}
       </View>
     );
