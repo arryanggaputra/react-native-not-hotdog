@@ -8,6 +8,7 @@ import {
   DeviceEventEmitter
 } from "react-native";
 import * as Animatable from "react-native-animatable";
+import CameraButton from "../CameraScreen/component/cameraButton";
 import Style from "../../assets/style.js";
 
 const logo = require("../../assets/logo.png");
@@ -18,9 +19,7 @@ class SplashScreen extends Component {
     super(props);
     this.state = {
       showTheButton: false,
-      logoAnimation: "",
-      logoAnimationIteration: 1,
-      takePictureAnimation: ""
+      takePictureAnimation: "zoomIn"
     };
     this.goToCameraScreen = this.goToCameraScreen.bind(this);
   }
@@ -29,18 +28,13 @@ class SplashScreen extends Component {
     DeviceEventEmitter.addListener("refreshAnimation", () => {
       setTimeout(() => {
         this.setState({
-          takePictureAnimation: "slideInUp"
+          takePictureAnimation: "zoomIn"
         });
       }, 1000);
     });
   }
 
   componentDidMount() {
-    this.setState({
-      logoAnimation: "bounceIn",
-      takePictureAnimation: "slideInUp"
-    });
-
     setTimeout(() => {
       this.setState({ showTheButton: true });
     }, 2000);
@@ -49,7 +43,7 @@ class SplashScreen extends Component {
   goToCameraScreen() {
     this.setState(
       {
-        takePictureAnimation: "slideOutDown"
+        takePictureAnimation: "zoomOut"
       },
       () => {
         setTimeout(() => {
@@ -94,35 +88,25 @@ class SplashScreen extends Component {
         <View>
           <Animatable.Image
             duration={2000}
-            animation={this.state.logoAnimation}
+            animation="pulse"
             easing="ease-out"
-            iterationCount={this.state.logoAnimationIteration}
-            onAnimationEnd={() => {
-              this.setState({
-                logoAnimation: "pulse",
-                logoAnimationIteration: "infinite"
-              });
-            }}
+            iterationCount="infinite"
             style={{ width: 240, resizeMode: "contain" }}
             source={logo}
           />
         </View>
 
         {this.state.showTheButton && (
-          <Animatable.View
+          <CameraButton
+            onPress={() => {
+              this.goToCameraScreen();
+            }}
+            duration={2000}
             animation={this.state.takePictureAnimation}
-            duration={500}
-            style={Style.floatingArea}
-          >
-            <TouchableOpacity
-              style={[Style.button, Style.buttonGreen, { width: 200 }]}
-              onPress={() => {
-                this.goToCameraScreen();
-              }}
-            >
-              <Text style={Style.buttonText}>Take a picture!</Text>
-            </TouchableOpacity>
-          </Animatable.View>
+            style={Style.buttonGreen}
+            textStyle={{ color: "black" }}
+            text={"Take a picture!"}
+          />
         )}
       </View>
     );
