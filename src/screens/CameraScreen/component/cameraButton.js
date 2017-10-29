@@ -8,7 +8,7 @@ class CameraButton extends Component {
     return (
       <Animatable.View
         animation={this.props.animation}
-        duration={1000}
+        duration={this.props.duration ? this.props.duration : 1000}
         style={Style.floatingArea}
       >
         <TouchableOpacity
@@ -17,7 +17,9 @@ class CameraButton extends Component {
             this.props.onPress();
           }}
         >
-          <Text style={[Style.buttonText, { color: "white" }]}>
+          <Text
+            style={[Style.buttonText, { color: "white" }, this.props.textStyle]}
+          >
             {this.props.text}
           </Text>
         </TouchableOpacity>
