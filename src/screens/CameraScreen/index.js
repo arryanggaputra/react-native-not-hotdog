@@ -16,7 +16,11 @@ import ImageNotification from "./component/imageNotification";
 import EvaluateIndicator from "./component/evaluateIndicator";
 import CameraButton from "./component/cameraButton";
 import Style from "../../assets/style.js";
-import { ValidateTheHotdog, ConvertToBase64 } from "../../lib/ImageProcessing";
+import {
+  ValidateTheHotdog,
+  ConvertToBase64,
+  DeleteImage
+} from "../../lib/ImageProcessing";
 
 const hotdogTrue = require("../../assets/hotdog_true.png");
 const hotdogFalse = require("../../assets/hotdog_false.png");
@@ -28,12 +32,12 @@ class CameraScreen extends Component {
     this.takePicture = this.takePicture.bind(this);
     this.showEvaluating = this.showEvaluating.bind(this);
     this.showResult = this.showResult.bind(this);
-    this.showRetake = this.showRetake.bind(this);
+    this.showRetakeCamera = this.showRetakeCamera.bind(this);
     this.processImage = this.processImage.bind(this);
 
     this.state = {
-      showRetake: true,
-      showRetakeAnimation: "slideInUp",
+      showRetakeCamera: true,
+      showRetakeCameraAnimation: "slideInUp",
       showEvaluating: false,
       showResult: false,
       showResultAnimation: "slideInUp",
@@ -65,7 +69,7 @@ class CameraScreen extends Component {
       .then(data => {
         setTimeout(() => {
           this.setState({
-            // showRetake: false,
+            // showRetakeCamera: false,
             previewImage: true,
             previewImageUri: data.path
           });
@@ -91,13 +95,13 @@ class CameraScreen extends Component {
     });
   }
 
-  showRetake() {
+  showRetakeCamera() {
     this.setState(
       {
-        showRetake: true,
+        showRetakeCamera: true,
         previewImage: false,
         showImageNotification: false,
-        showRetakeAnimation: "slideInUp",
+        showRetakeCameraAnimation: "slideInUp",
         showResultAnimation: "zoomOut" //zoom out Result area
       },
       () => {
@@ -105,6 +109,7 @@ class CameraScreen extends Component {
           this.setState({
             showResult: false // hide result area
           });
+          DeleteImage(this.state.previewImageUri);
         }, 1500);
       }
     );
@@ -114,13 +119,13 @@ class CameraScreen extends Component {
     this.setState(
       {
         showEvaluating: true,
-        showRetakeAnimation: "zoomOut" //zoom out capture camera button
+        showRetakeCameraAnimation: "zoomOut" //zoom out capture camera button
       },
       () => {
         //   wait 1.5 second
         setTimeout(() => {
           this.setState({
-            showRetake: false // hide capture camera button
+            showRetakeCamera: false // hide capture camera button
           });
         }, 1500);
       }
@@ -166,12 +171,12 @@ class CameraScreen extends Component {
           />
         )}
 
-        {this.state.showRetake && (
+        {this.state.showRetakeCamera && (
           <CameraButton
             onPress={() => {
               this.takePicture();
             }}
-            animation={this.state.showRetakeAnimation}
+            animation={this.state.showRetakeCameraAnimation}
             style={Style.buttonRed}
             text={"Take it!"}
           />
@@ -187,7 +192,7 @@ class CameraScreen extends Component {
             <Text
               style={{ fontWeight: "bold", color: "white", marginTop: 20 }}
               onPress={() => {
-                this.showRetake();
+                this.showRetakeCamera();
               }}
             >
               No, Thanks
