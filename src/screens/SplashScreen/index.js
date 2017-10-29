@@ -10,9 +10,11 @@ import {
 import * as Animatable from "react-native-animatable";
 import CameraButton from "../CameraScreen/component/cameraButton";
 import Style from "../../assets/style.js";
+import Sound from "react-native-sound";
 
 const logo = require("../../assets/logo.png");
 const background = require("../../assets/background.jpg");
+const soundPath = "chicken_wing_hotdog.mp3";
 
 class SplashScreen extends Component {
   constructor(props) {
@@ -22,11 +24,22 @@ class SplashScreen extends Component {
       takePictureAnimation: "zoomIn"
     };
     this.goToCameraScreen = this.goToCameraScreen.bind(this);
+    this.sound = "";
   }
 
   componentWillMount() {
+    this.sound = new Sound(soundPath, Sound.MAIN_BUNDLE, error => {
+      if (error) {
+        console.log("failed to load the sound", error);
+        return;
+      }
+      this.sound.setNumberOfLoops(-1);
+      this.sound.play();
+    });
+
     DeviceEventEmitter.addListener("refreshAnimation", () => {
       setTimeout(() => {
+        this.sound.play();
         this.setState({
           takePictureAnimation: "zoomIn"
         });
@@ -47,6 +60,7 @@ class SplashScreen extends Component {
       },
       () => {
         setTimeout(() => {
+          this.sound.stop();
           this.props.navigation.navigate("CameraScreen");
         }, 1500);
       }
