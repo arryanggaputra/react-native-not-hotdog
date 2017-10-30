@@ -184,7 +184,10 @@ class CameraScreen extends Component {
 
         {this.state.showResult && (
           <CameraButton
-            onPress={() => {}}
+            onPress={() => {
+              this.componentWillUnmount();
+              this.props.navigation.navigate("ShareScreen");
+            }}
             animation={this.state.showResultAnimation}
             style={Style.buttonBlue}
             text={"SHARE!"}
